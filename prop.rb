@@ -35,7 +35,7 @@ end
 
 # The last Cn codepoint should be 0x10ffff. If it's not, append the missing
 # codepoints
-data['Cn'] += (data['Cn'].last..0x10ffff).to_a
+data['Cn'] += (data['Cn'].last.next..0x10ffff).to_a
 
 data.sort.each do |prop, codepoints|
 
