@@ -29,7 +29,7 @@ ARGF.lines do |line|
   
   # The 'Major' category is the first letter of the 'General' category, e.g.
   # 'Lu' -> 'L'
-  (data[fields[2][0]] ||= []) << cp
+  (data[fields[2][0,1]] ||= []) << cp
   last_cp = cp
 end
 
@@ -38,7 +38,7 @@ end
 data['Cn'] += (data['Cn'].last..0x10ffff).to_a
 
 data.sort.each do |prop, codepoints|
-  
+
   # We have a sorted Array of codepoints that we wish to partition into
   # ranges such that the start- and endpoints form an inclusive set of
   # codepoints with property _property_. Note: It is intended that some ranges
