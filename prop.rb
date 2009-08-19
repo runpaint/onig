@@ -17,7 +17,7 @@ def pair_codepoints(codepoints)
   # codepoints with property _property_. Note: It is intended that some ranges
   # will begin with the value with  which they end, e.g. 0x0020 -> 0x0020
   
-  codepoints.sort!
+  codepoints.uniq.sort!
   last_cp = codepoints.first
   pairs = [[last_cp, nil]]
   codepoints[1..-1].each do |codepoint|
