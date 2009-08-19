@@ -37,6 +37,65 @@ end
 # codepoints
 data['Cn'] += (data['Cn'].last.next..0x10ffff).to_a
 
+# We now derive the character classes (POSIX brackets), e.g. [[:alpha:]]
+#
+
+# alnum    Letter | Mark | Decimal_Number
+data['Alnum'] = data['L'] + data['M'] + data['Nd']
+
+# alpha    Letter | Mark
+data['Alpha'] = data['L'] + data['M']
+
+# ascii    0000 - 007F
+data['Ascii'] = (0..0x007F).to_a
+
+# blank    Space_Separator | 0009
+data['Blank'] = data['Zs'] + [0x0009]
+
+# TODO: Double check this definition. It appears to encompass the entire C
+# category, but currently the CR blocks for C and Cntrl are markedly different
+# cntrl    Control | Format | Unassigned | Private_Use | Surrogate
+data['Cntrl'] = data['Cc'] + data['Cf'] + data['Cn'] + data['Co'] + data['Cs']
+
+# digit    Decimal_Number
+data['Digit'] = data['Nd']
+
+# lower    Lowercase_Letter
+data['Lower'] = data['Ll']
+
+# punct    Connector_Punctuation | Dash_Punctuation | Close_Punctuation |
+#          Final_Punctuation | Initial_Punctuation | Other_Punctuation |
+#          Open_Punctuation
+# NOTE: This definition encompasses the entire P category, and the current
+# mappings agree, but we explcitly declare this way to marry it with the above
+# definition.
+data['Punct'] = data['Pc'] + data['Pd'] + data['Pe'] + data['Pf'] + 
+                data['Pi'] + data['Po'] + data['Ps']
+
+# space    Space_Separator | Line_Separator | Paragraph_Separator |
+#               0009 | 000A | 000B | 000C | 000D | 0085
+data['Space'] = data['Zs'] + data['Zl'] + data['Zp'] + 
+                [0x0009, 0x000A, 0x000B, 0x000C, 0x000D, 0x0085]
+
+# upper    Uppercase_Letter
+data['Upper'] = data['Lu']
+
+# xdigit   0030 - 0039 | 0041 - 0046 | 0061 - 0066
+#          (0-9, a-f, A-F)
+data['Xdigit'] = (0x0030..0x0039).to_a + (0x0041..0x0046).to_a + 
+                 (0x0061..0x0066).to_a + ('0'.ord..'9'.ord).to_a + 
+                 ('a'.ord..'f'.ord).to_a + ('A'.ord..'F'.ord).to_a
+
+# word     Letter | Mark | Decimal_Number | Connector_Punctuation
+data['Word'] = data['L'] + data['M'] + data['Nd'] + data['Pc']
+
+# graph    [[:^space:]] && ^Control && ^Unassigned && ^Surrogate
+data['Graph'] = data['L'] + data['M'] + data['N'] + data['P'] + data['S']
+data['Graph'] -= data['Space'] - data['C']
+
+# print    [[:graph:]] | [[:space:]]
+data['Print'] = data['Graph'] + data['Space']
+
 data.sort.each do |prop, codepoints|
 
   # We have a sorted Array of codepoints that we wish to partition into
